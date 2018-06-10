@@ -13,7 +13,15 @@ import java.util.ArrayList;
 
 
 public class NumbersActivity extends AppCompatActivity {
-    MediaPlayer mp;
+    private MediaPlayer mp;
+
+    private MediaPlayer.OnCompletionListener myComplitionListener = new MediaPlayer.OnCompletionListener() {
+        @Override
+        public void onCompletion(MediaPlayer mediaPlayer) {
+            releaseMediaPlayer();
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,11 +49,25 @@ public class NumbersActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int i, long l) {
                 Word word = englishNumbersList.get(i);
-              mp = MediaPlayer.create(NumbersActivity.this, word.getAudioID());
+
+                releaseMediaPlayer();
+
+                mp = MediaPlayer.create(NumbersActivity.this, word.getAudioID());
                 mp.start();
+
+                mp.setOnCompletionListener(myComplitionListener);
             }
         });
 
+
+
+
     }
+     private void releaseMediaPlayer(){
+        if(mp != null){
+            mp.release();
+            mp = null;
+        }
+     }
 }
 
